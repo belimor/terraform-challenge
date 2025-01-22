@@ -3,10 +3,10 @@ project    = "Ansys"
 env        = "dev"
 
 custom_tags = {
-  owner    = "Dmitry"
+  owner = "Dmitry"
 }
 
-vpc_cidr       = "10.0.0.0/16"
+vpc_cidr = "10.0.0.0/16"
 
 nginx_ec2_type = "t2.micro"
 nginx_ec2_ami  = "ami-0cb91c7de36eed2cb"

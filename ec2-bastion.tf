@@ -20,7 +20,7 @@ resource "aws_security_group" "bastion_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] 
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -47,7 +47,7 @@ resource "random_integer" "bastion_subnet_selector" {
 
 resource "aws_instance" "bastion_public_instance" {
   ami                         = var.bastion_ec2_ami
-  instance_type               = var.bastion_ec2_type         
+  instance_type               = var.bastion_ec2_type
   key_name                    = aws_key_pair.bastion_ssh_key.key_name
   subnet_id                   = aws_subnet.public[random_integer.bastion_subnet_selector.result].id
   associate_public_ip_address = true

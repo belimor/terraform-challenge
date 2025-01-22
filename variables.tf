@@ -36,7 +36,7 @@ variable "nginx_ec2_ami" {
 }
 
 variable "nginx_ssh_key" {
-  type = string
+  type        = string
   description = "Path to ssh key"
 }
 
@@ -52,7 +52,7 @@ variable "bastion_ec2_ami" {
 }
 
 variable "bastion_ssh_key" {
-  type = string
+  type        = string
   description = "Path to ssh key"
 }
 
@@ -68,7 +68,7 @@ variable "private_ec2_ami" {
 }
 
 variable "private_ssh_key" {
-  type = string
+  type        = string
   description = "Path to ssh key"
 }
 
