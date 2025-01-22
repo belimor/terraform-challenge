@@ -1,4 +1,4 @@
-# terraform-challenge
+# Terraform-Challenge
 
 Terraform Infrastructure as Code Problem Statement:
 
@@ -15,6 +15,6 @@ You will need to ensure that this box is reachable over HTTP (port 80) by IP add
 - Create three private subnets across different availability zones within the VPC
 - Ensure that instances in the public subnets have internet access, while instances in the private subnets do not have direct internet connectivity
 - Parameterize your Terraform code appropriately for reusability and flexibility
-- Ensure you have meaningful commit messages, so we can follow your thought process
+- Ensure you have meaningful commit messages.
 - Code should contain NO comments
 
