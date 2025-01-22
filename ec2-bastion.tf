@@ -1,6 +1,15 @@
 resource "aws_key_pair" "bastion_ssh_key" {
   key_name   = "bastion-ssh-key"
-  public_key = file("~/.ssh/id_ed25519.pub")
+  public_key = file("${var.bastion_ssh_key}")
+
+  tags = merge(
+    var.custom_tags,
+    {
+      Name    = "bastion-ssh-key"
+      Project = var.project
+      Env     = var.env
+    }
+  )
 }
 
 resource "aws_security_group" "bastion_sg" {
@@ -20,6 +29,15 @@ resource "aws_security_group" "bastion_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = merge(
+    var.custom_tags,
+    {
+      Name    = "bastion-security-group"
+      Project = var.project
+      Env     = var.env
+    }
+  )
 }
 
 resource "random_integer" "bastion_subnet_selector" {
@@ -28,16 +46,21 @@ resource "random_integer" "bastion_subnet_selector" {
 }
 
 resource "aws_instance" "bastion_public_instance" {
-  ami                         = "ami-0cb91c7de36eed2cb" 
-  instance_type               = "t2.micro"              
+  ami                         = var.bastion_ec2_ami
+  instance_type               = var.bastion_ec2_type         
   key_name                    = aws_key_pair.bastion_ssh_key.key_name
   subnet_id                   = aws_subnet.public[random_integer.bastion_subnet_selector.result].id
   associate_public_ip_address = true
   vpc_security_group_ids      = [aws_security_group.bastion_sg.id]
 
-  tags = {
-    Name = "bastion-public-instance"
-  }
+  tags = merge(
+    var.custom_tags,
+    {
+      Name    = "bastion-security-group"
+      Project = var.project
+      Env     = var.env
+    }
+  )
 }
 
 output "bastion_public_ip" {

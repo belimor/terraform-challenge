@@ -1,6 +1,15 @@
 resource "aws_key_pair" "nginx_ssh_key" {
   key_name   = "nginx-ssh-key"
-  public_key = file("~/.ssh/id_ed25519.pub")
+  public_key = file("${var.nginx_ssh_key}")
+
+  tags = merge(
+    var.custom_tags,
+    {
+      Name    = "nginx-ssh-key"
+      Project = var.project
+      Env     = var.env
+    }
+  )
 }
 
 resource "aws_security_group" "nginx_sg" {
@@ -18,7 +27,7 @@ resource "aws_security_group" "nginx_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
+    cidr_blocks = ["${var.vpc_cidr}"]
   }
 
   egress {
@@ -27,6 +36,15 @@ resource "aws_security_group" "nginx_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = merge(
+    var.custom_tags,
+    {
+      Name    = "nginx-security-group"
+      Project = var.project
+      Env     = var.env
+    }
+  )
 }
 
 resource "random_integer" "nginx_subnet_selector" {
@@ -38,21 +56,31 @@ resource "aws_eip" "nginx_instance_eip" {
   domain     = "vpc"
   instance   = aws_instance.nginx_public_instance.id
 
-  tags = {
-    Name = "nginx-instance-eip"
-  }
+  tags = merge(
+    var.custom_tags,
+    {
+      Name    = "nginx-instance-eip"
+      Project = var.project
+      Env     = var.env
+    }
+  )
 }
 
 resource "aws_instance" "nginx_public_instance" {
-  ami                         = "ami-0cb91c7de36eed2cb" 
-  instance_type               = "t2.micro"              
+  ami                         = var.nginx_ec2_ami
+  instance_type               = var.nginx_ec2_type
   key_name                    = aws_key_pair.nginx_ssh_key.key_name
   subnet_id                   = aws_subnet.public[random_integer.nginx_subnet_selector.result].id
   vpc_security_group_ids      = [aws_security_group.nginx_sg.id]
 
-  tags = {
-    Name = "nginx-public-instance"
-  }
+  tags = merge(
+    var.custom_tags,
+    {
+      Name    = "nginx-public-instance"
+      Project = var.project
+      Env     = var.env
+    }
+  )
 }
 
 output "nginx_public_ip" {

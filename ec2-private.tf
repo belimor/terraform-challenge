@@ -1,6 +1,15 @@
 resource "aws_key_pair" "db_ssh_key" {
   key_name   = "db-ssh-key"
-  public_key = file("~/.ssh/id_ed25519.pub")
+  public_key = file("${var.private_ssh_key}")
+
+  tags = merge(
+    var.custom_tags,
+    {
+      Name    = "private-ssh-key"
+      Project = var.project
+      Env     = var.env
+    }
+  )
 }
 
 resource "aws_security_group" "db_sg" {
@@ -20,6 +29,15 @@ resource "aws_security_group" "db_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = merge(
+    var.custom_tags,
+    {
+      Name    = "private-security-group"
+      Project = var.project
+      Env     = var.env
+    }
+  )
 }
 
 resource "random_integer" "private_subnet_selector" {
@@ -27,15 +45,20 @@ resource "random_integer" "private_subnet_selector" {
   max = 2
 }
 
-resource "aws_instance" "db_private-instance" {
-  ami                         = "ami-0cb91c7de36eed2cb" 
-  instance_type               = "t2.micro"              
+resource "aws_instance" "db_private_instance" {
+  ami                         = var.private_ec2_ami
+  instance_type               = var.private_ec2_type
   key_name                    = aws_key_pair.db_ssh_key.key_name
   subnet_id                   = aws_subnet.private[random_integer.private_subnet_selector.result].id
   vpc_security_group_ids      = [aws_security_group.db_sg.id]
 
-  tags = {
-    Name = "db-public-instance"
-  }
+  tags = merge(
+    var.custom_tags,
+    {
+      Name    = "db-private-instance"
+      Project = var.project
+      Env     = var.env
+    }
+  )
 }
 
