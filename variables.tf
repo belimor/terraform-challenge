@@ -10,7 +10,7 @@ variable "aws_region" {
 
 variable "env" {
   type        = string
-  description = "Deployment environment"
+  description = "Depolyment environment"
 }
 
 variable "custom_tags" {
@@ -56,39 +56,19 @@ variable "bastion_ssh_key" {
   description = "Path to ssh key"
 }
 
-variable "nginx_security_group_rules" {
-  description = "The security group rules for the web servers."
-  type = object({
-    ingress = optional(map(object({
-      cidr_ipv4   = string
-      from_port   = number
-      ip_protocol = string
-      to_port     = number
-    })), {})
-    egress = optional(map(object({
-      cidr_ipv4   = string
-      from_port   = number
-      ip_protocol = string
-      to_port     = number
-    })), {})
-  })
+variable "private_ec2_type" {
+  type        = string
+  description = "EC2 instance type"
+  default     = "t2.micro"
 }
 
-variable "bastion_security_group_rules" {
-  description = "The security group rules for the web servers."
-  type = object({
-    ingress = optional(map(object({
-      cidr_ipv4   = string
-      from_port   = number
-      ip_protocol = string
-      to_port     = number
-    })), {})
-    egress = optional(map(object({
-      cidr_ipv4   = string
-      from_port   = number
-      ip_protocol = string
-      to_port     = number
-    })), {})
-  })
+variable "private_ec2_ami" {
+  type        = string
+  description = "AMI ID"
+}
+
+variable "private_ssh_key" {
+  type        = string
+  description = "Path to ssh key"
 }
 
