@@ -56,7 +56,7 @@ resource "aws_instance" "bastion_public_instance" {
   tags = merge(
     var.custom_tags,
     {
-      Name    = "bastion-security-group"
+      Name    = "bastion-public-instance"
       Project = var.project
       Env     = var.env
     }
